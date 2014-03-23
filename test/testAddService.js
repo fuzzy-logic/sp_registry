@@ -7,14 +7,27 @@ var host = 'http://localhost:8888';
 
 describe('service registry', function(){
 
-  it('should return success', function(done){
+  it('new service response should return success', function(done){
 
 	var req = request.post(host + '/service/testservice');
-	req.type('form');
-	req.send({name: 'testservice'});
+	req.send( {name: 'testservice',
+                port: 8888,
+                hosts: ['192.168.0.1', '192.168.0.2']}
+            );
 
 	req.end(function(res){
     	  assert.ok(res.text.indexOf('added') > -1);
+    	  done();
+    	});
+
+  });
+    
+  it('new service data should be returned upon get', function(done){
+
+	var req = request.get(host + '/service/testservice');
+	req.end(function(res){
+    	  assert.ok(res.text.indexOf('192.168.0.1') > -1);
+          assert.ok(res.text.indexOf('192.168.0.2') > -1);
     	  done();
     	});
 
