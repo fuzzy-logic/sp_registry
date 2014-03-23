@@ -1,0 +1,20 @@
+{
+    "name": "sp_registry",
+    "description": "Registry Simple PaaS",
+    "version": "0.0.1",
+    "private": true,
+    "scripts": {
+        "start": "node app",
+        "test": "./node_modules/mocha/bin/mocha -R spec"
+    },
+    "dependencies": {
+        "underscore": "1.6.0",
+        "superagent": "*",
+        "assert": "*",
+        "restify": "*"
+    },
+    "devDependencies": {
+        "mocha": "1.17.1"
+    }
+}
+
