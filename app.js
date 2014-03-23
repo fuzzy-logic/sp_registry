@@ -22,6 +22,7 @@ server.listen(port, function() {
 
 server.get('/service/:service_name', apiroutes.get_service);
 server.post('/service/:service_name', apiroutes.new_service);
+server.post('/service/:service_name/addhost/:host', apiroutes.add_host);
 
 
 server.get('/', function(req, res){

@@ -32,5 +32,15 @@ describe('service registry', function(){
     	});
 
   });
+    
+  it('can add new host', function(done){
+
+	var req = request.post(host + '/service/testservice/addhost/192.168.0.3');
+	req.end(function(res){
+    	  assert.ok(res.text.indexOf('192.168.0.3') > -1);
+    	  done();
+    	});
+
+  });
 
 });
