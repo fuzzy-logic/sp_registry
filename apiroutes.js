@@ -23,9 +23,10 @@ exports.add_host = function (req, res) {
   console.log('add_host()');
   var service = req.params.service_name;
   var host = req.params.host;
+  console.log('add_host() new host: ' + host);
   var service_data = services[service];
-  console.log('add_host() 2');
-  service_data[service].hosts[0].type.push(host);
+  console.log('add_host() hosts: ' + service_data.hosts);
+  service_data.hosts.push(host);
   console.log('add_host() new service=' + JSON.stringify(service_data) );
   var jsonResponse  = {service: service, status: "added host " + host};
   console.log("add_host() response:" + JSON.stringify(jsonResponse));

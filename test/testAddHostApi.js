@@ -37,6 +37,7 @@ describe('service registry', function(){
 
 	var req = request.post(host + '/service/testservice/addhost/192.168.0.3');
 	req.end(function(res){
+        console.log("res: " + res.text)
     	  assert.ok(res.text.indexOf('192.168.0.3') > -1);
     	  done();
     	});
