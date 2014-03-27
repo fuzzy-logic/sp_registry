@@ -5,10 +5,9 @@ require('../app.js'); //Boot up the server for tests
 var host = 'http://localhost:8888';
 
 
-describe('service registry', function(){
+describe('test adding service and host via service registry', function(){
 
-  it('new service response should return success', function(done){
-
+  it('create new service and ensure response returns success', function(done){
 	var req = request.post(host + '/service/testservice');
 	req.send( {name: 'testservice',
                 port: 8888,
@@ -22,26 +21,66 @@ describe('service registry', function(){
 
   });
     
-  it('new service data should be returned upon get', function(done){
-
-	var req = request.get(host + '/service/testservice');
+  it('next host round robin', function(done){
+	var req = request.get(host + '/service/testservice/host/next');
 	req.end(function(res){
-    	  assert.ok(res.text.indexOf('192.168.0.1') > -1);
-          assert.ok(res.text.indexOf('192.168.0.2') > -1);
+           console.log("res1: " + res.text)
+    	  assert.ok(contains(res.text, '192.168.0.2'));
+    	 
+    	});
+ 
+	var req2 = request.get(host + '/service/testservice/host/next');
+	req2.end(function(res){
+           console.log("res2: " + res.text)
+    	  assert.ok(contains(res.text, '192.168.0.1'));
+    	 
+    	});
+
+	var req3 = request.get(host + '/service/testservice/host/next');
+	req3.end(function(res){
+           console.log("res3: " + res.text)
+    	  assert.ok(contains(res.text, '192.168.0.2'));
+    	 
+    	});
+ 
+	var req4 = request.get(host + '/service/testservice/host/next');
+	req4.end(function(res){
+           console.log("res4: " + res.text)
+    	  assert.ok(contains(res.text, '192.168.0.1'));
+    	  done();
+    	});
+
+  });    
+     
+    
+  it('test add new host', function(done){
+	var req = request.post(host + '/service/testservice/addhost/192.168.0.3');
+	req.end(function(res){
+          console.log("res: " + res.text)
+    	  assert.ok(contains(res.text, '192.168.0.3') );
     	  done();
     	});
 
   });
     
-  it('can add new host', function(done){
-
-	var req = request.post(host + '/service/testservice/addhost/192.168.0.3');
+  it('new host data should be returned', function(done){
+	var req = request.get(host + '/service/testservice');
 	req.end(function(res){
-        console.log("res: " + res.text)
-    	  assert.ok(res.text.indexOf('192.168.0.3') > -1);
+    	  assert.ok(contains(res.text, '192.168.0.1'));
+          assert.ok(contains(res.text, '192.168.0.2'));
+          assert.ok(contains(res.text, '192.168.0.3'));
     	  done();
     	});
 
   });
+    
+
+    
+
 
 });
+
+
+function contains(string, value) {
+    return string.indexOf(value) > -1    
+}
