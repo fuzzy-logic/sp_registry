@@ -20,11 +20,12 @@ server.listen(port, function() {
 
 
 
+server.get('/service', apiroutes.services);
 server.get('/service/:service_name', apiroutes.get_service);
-server.post('/service/:service_name', apiroutes.new_service);
-server.post('/service/:service_name/addhost/:host', apiroutes.add_host);
 server.get('/service/:service_name/host/next', apiroutes.next_host);
 
+server.post('/service/:service_name', apiroutes.new_service);
+server.post('/service/:service_name/addhost/:host', apiroutes.add_host);
 
 server.get('/', function(req, res){
   //res.render('index', {service: 'sp_registry', add_link:'PUT /registry/xyzname', list: 'GET /registry'});
