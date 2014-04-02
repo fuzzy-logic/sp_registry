@@ -1,6 +1,6 @@
 {
     "name": "sp_registry",
-    "description": "Registry Simple PaaS",
+    "description": "SP Registry",
     "version": "0.0.1",
     "private": true,
     "scripts": {
