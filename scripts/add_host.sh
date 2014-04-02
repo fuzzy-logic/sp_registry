@@ -12,5 +12,8 @@ SERVICE_NAME=$1
 HOST=$2
 PORT=$3
 
-echo curl -vvv -X POST $REGISTRY -d "{name: $SERVICE_NAME, port: $PORT, hosts: [$HOST] }"
-curl -vvv -X POST $REGISTRY -d "{name: $SERVICE_NAME, port: $PORT, hosts: [$HOST] }"
+
+URL=$REGISTRY/service/$SERVICE_NAME
+
+echo curl -vvv -X POST $URL -d \'{'name': $SERVICE_NAME, 'port': $PORT, 'hosts': [$HOST] }\'
+curl -vvv -X POST $URL -d "{\"name\": \"$SERVICE_NAME\", \"port\": \"$PORT\", \"hosts\": [\"$HOST\"] }"

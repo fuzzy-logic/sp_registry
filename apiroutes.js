@@ -1,10 +1,15 @@
 var services = {};
 
 exports.new_service = function (req, res) {
-  console.log('exports.new_service()');
-  var body = req.body;
+  console.log('exports.new_service() body=' + req.body);
+  console.dir(req.body);
+  var body = {};       
+    try {
+        body = JSON.parse(req.body);
+    } catch (e) {
+        body = req.body;
+    }
   var servicename = req.params.service_name;
-  console.log('exports.new_service(): body=' + body);
   console.log('exports.new_service(): service=' + servicename);
   body['link'] = "/service/" + servicename 
   services[servicename] = body;     
@@ -42,7 +47,7 @@ exports.add_host = function (req, res) {
 
 exports.next_host = function(req, res) {
     var service = req.params.service_name;
-    console.log("next_host() for service " + service + ":");
+    console.log("next_host() for service " + service );
     var service_data = services[service];
     //console.log("service data: " + JSON.stringify(service_data) );
     if ( service_data['counter'] == undefined ) {
@@ -50,8 +55,8 @@ exports.next_host = function(req, res) {
         
     } 
     
-    //console.log("counter: " + service_data.counter);
-    //console.log("hosts: " + service_data.hosts.length); 
+    console.log("counter: " + service_data.counter);
+    console.log("hosts: " + service_data.hosts.length); 
     var  newcounter = service_data.counter + 1;
     var modCounter = newcounter % service_data.hosts.length ;        
     //console.log("newcounter: " + newcounter);
@@ -59,7 +64,6 @@ exports.next_host = function(req, res) {
     //console.log(" 2 % 3: " + 3 % 2 );
     service_data['counter'] =  modCounter; 
     //console.log("counter: " + service_data.counter);
-  
     host = service_data.hosts[service_data.counter];
     console.log("returning round robin host: " + host);
     

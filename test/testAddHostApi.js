@@ -8,13 +8,14 @@ var host = 'http://localhost:8888';
 describe('test adding service and host via service registry', function(){
 
   it('create new service and ensure response returns success', function(done){
+    var senddata = {name: "testservice",  port: "8888",  hosts: ["192.168.0.1", "192.168.0.2"]};  
 	var req = request.post(host + '/service/testservice');
-	req.send( {name: 'testservice',
-                port: 8888,
-                hosts: ['192.168.0.1', '192.168.0.2']}
-            );
+    req.type('form');
+	req.set('Content-Type', 'application/json');
+    req.send( JSON.stringify(senddata) );
 
 	req.end(function(res){
+          console.dir(res);
     	  assert.ok(res.text.indexOf('added') > -1);
     	  done();
     	});
@@ -22,13 +23,14 @@ describe('test adding service and host via service registry', function(){
   });
     
  it('create second service and ensure response returns success', function(done){
+     var senddata = {name: "my.other.service", port: "1234", hosts: ["192.168.1.1", "192.168.1.2"]};
 	var req = request.post(host + '/service/my.other.service');
-	req.send( {name: 'my.other.service',
-                port: 1234,
-                hosts: ['192.168.1.1', '192.168.1.2']}
-            );
+    req.type('form');
+    req.set('Content-Type', 'application/json');
+	req.send( JSON.stringify(senddata) );
 
 	req.end(function(res){
+         console.dir(res);
     	  assert.ok(res.text.indexOf('added') > -1);
     	  done();
     	});
