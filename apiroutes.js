@@ -67,6 +67,6 @@ exports.next_host = function(req, res) {
     host = service_data.hosts[service_data.counter];
     console.log("returning round robin host: " + host);
     
-    res.send(JSON.stringify({host: host}));
+    res.send({host: host});
 }
 
