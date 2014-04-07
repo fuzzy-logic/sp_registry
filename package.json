@@ -8,13 +8,13 @@
         "test": "./node_modules/mocha/bin/mocha -R spec"
     },
     "dependencies": {
-        "underscore": "1.6.0",
+        "underscore": "*",
         "superagent": "*",
         "assert": "*",
         "restify": "*"
     },
     "devDependencies": {
-        "mocha": "1.17.1"
+        "mocha": "*"
     }
 }
 
