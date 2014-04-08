@@ -93,7 +93,7 @@ describe('test adding service and host via service registry', function(){
  it('service list contains newly added data', function(done){
 	var req = request.get(host + '/service');
 	req.end(function(res){
-          //console.log("res: " + res.text)
+          //console.log("res: " + res.text);
           assert.ok(contains(res.text, 'testservice'));          
     	  assert.ok(contains(res.text, '192.168.0.1'));
           assert.ok(contains(res.text, '192.168.0.2'));
@@ -101,6 +101,18 @@ describe('test adding service and host via service registry', function(){
           assert.ok(contains(res.text, 'my.other.service'));
           assert.ok(contains(res.text, '192.168.1.1'));
           assert.ok(contains(res.text, '192.168.1.2'));
+    	  done();
+    	});
+
+  });
+    
+  it('host is deleted from service', function(done){
+	var req = request.del(host + '/service/testservice/host/192.168.0.3');
+	req.end(function(res){
+          console.log("res: " + res.text);
+    	  assert.ok(contains(res.text, '192.168.0.1'));
+          assert.ok(contains(res.text, '192.168.0.2'));
+          assert.ok(! contains(res.text, '192.168.0.3'));
     	  done();
     	});
 

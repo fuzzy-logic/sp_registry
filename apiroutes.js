@@ -1,3 +1,4 @@
+var _ = require("underscore");
 var services = {};
 
 exports.new_service = function (req, res) {
@@ -68,5 +69,13 @@ exports.next_host = function(req, res) {
     console.log("returning round robin host: " + host);
     
     res.send({host: host, port: service_data.port});
+}
+
+exports.delete_host = function(req, res) {
+    var service = req.params.service_name;
+    var host = req.params.host;
+    var service_data = services[service];   
+    service_data.hosts = _.filter(service_data.hosts, function(h) {return (h != host);} );
+    res.send({new_hosts: service_data.hosts});
 }
 
