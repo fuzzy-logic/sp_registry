@@ -36,12 +36,14 @@ exports.add_host = function (req, res) {
   console.log('add_host()');
   var service = req.params.service_name;
   var host = req.params.host;
-  console.log('add_host() new host: ' + host);
+  var port = req.params.port;
+  console.log('add_host() new host: ' + host + ':' + port);
   var service_data = services[service];
-  console.log('add_host() hosts: ' + service_data.hosts);
-  service_data.hosts.push(host);
+  console.log('add_host() hosts before: ' + service_data.hosts);
+  service_data.hosts.push(host + ':' + port);
+  console.log('add_host() hosts after: ' + service_data.hosts);
   console.log('add_host() new service=' + JSON.stringify(service_data) );
-  var jsonResponse  = {service: service, status: "added host " + host};
+  var jsonResponse  = {service: service, status: "added host " + host + ":" + port};
   console.log("add_host() response:" + JSON.stringify(jsonResponse));
   res.send(JSON.stringify(jsonResponse));
 }
@@ -65,17 +67,21 @@ exports.next_host = function(req, res) {
     //console.log(" 2 % 3: " + 3 % 2 );
     service_data['counter'] =  modCounter; 
     //console.log("counter: " + service_data.counter);
-    host = service_data.hosts[service_data.counter];
-    console.log("returning round robin host: " + host);
+    hostPort = service_data.hosts[service_data.counter];
+    console.log("returning round robin host: " + hostPort);
     
-    res.send({host: host, port: service_data.port});
+    var host = hostPort.split(':')[0];
+    var port = hostPort.split(':')[1];
+    res.send({host: host, port: port});
 }
 
 exports.delete_host = function(req, res) {
     var service = req.params.service_name;
     var host = req.params.host;
+    var port = req.params.port;
+    var hostPort = host + ':' + port;
     var service_data = services[service];   
-    service_data.hosts = _.filter(service_data.hosts, function(h) {return (h != host);} );
+    service_data.hosts = _.filter(service_data.hosts, function(h) {return (h != hostPort);} );
     res.send({new_hosts: service_data.hosts});
 }
 
