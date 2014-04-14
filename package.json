@@ -11,7 +11,8 @@
         "underscore": "*",
         "superagent": "*",
         "assert": "*",
-        "restify": "*"
+        "restify": "*",
+        "validator": "*"
     },
     "devDependencies": {
         "mocha": "*"

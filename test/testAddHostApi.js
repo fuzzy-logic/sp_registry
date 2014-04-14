@@ -1,5 +1,6 @@
 var assert = require('assert');
 var request = require("superagent");
+require("./mockDockerApi.js");
 require('../app.js'); //Boot up the server for tests
 //var host = config.host + ':' + config.port;
 var host = 'http://localhost:8888';
@@ -15,7 +16,7 @@ describe('test adding service and host via service registry', function(){
     req.send( JSON.stringify(senddata) );
 
 	req.end(function(res){
-          //console.dir(res);
+          //console.dir("response: " + JSON.stringify(res.text));
     	  assert.ok(res.text.indexOf('added') > -1);
     	  done();
     	});
@@ -118,13 +119,24 @@ describe('test adding service and host via service registry', function(){
 
   });
     
-  it('host is deleted from service', function(done){
+  it('delete host /service/testservice/host/192.168.0.3/80', function(done){
 	var req = request.del(host + '/service/testservice/host/192.168.0.3/80');
 	req.end(function(res){
-          //console.log("res: " + res.text);
+          //console.log("del res: " + res.text);
     	  assert.ok(contains(res.text, '192.168.0.1:80'));
           assert.ok(contains(res.text, '192.168.0.2:80'));
           assert.ok(! contains(res.text, '192.168.0.3:80'));
+    	  done();
+    	});
+
+  });
+    
+    
+  it('check docker api when no match', function(done){
+	var req = request.get(host + '/service/sp-control-plane');
+	req.end(function(res){
+          //console.log("res: " + res.text);
+    	  //assert.ok(contains(res.text, '192.168.0.1:80'));
     	  done();
     	});
 
