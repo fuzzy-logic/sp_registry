@@ -46,7 +46,7 @@ exports.services = function (req, res) {
 
 function find_from_docker(serviceName, res) {
     
-     //console.log('find_from_docker() unable to find service in memory, looking up docker services...');
+     console.log('find_from_docker() unable to find service in memory, looking up docker services...');
         
         var errCallback = function(err) {
             //consol.log('ERROR in get_service()->errCallback()');
@@ -64,7 +64,7 @@ function find_from_docker(serviceName, res) {
             for (var key in keys) {
               port = key.split('/')[0];
             }
-            //console.log("got ip/port from docker: " + ip + ':' + port);
+            console.log("got ip/port from docker: " + ip + ':' + port);
             addNewService(serviceName, ip, port);
             res.send(JSON.stringify({host: ip, port: port}));
         }
@@ -227,7 +227,7 @@ function asyncJsonApiHttpGet(host, port, path, clientCallback, errCallback) {
         });
     };
     
-    //console.log('asyncJsonApiHttpGet() creating request with options=' + JSON.stringify(opts));  
+    console.log('asyncJsonApiHttpGet() creating request with options=' + JSON.stringify(opts));  
     var httpRequest = http.request(opts, callback);
     
     httpRequest.on('error', function(err){
