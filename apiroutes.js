@@ -198,6 +198,11 @@ function inspectContainer(name, callback, errCallback) {
 };
 
 
+exports.debug = function (req, res) {
+     res.send({services: services});
+}
+
+
 
 function asyncJsonApiHttpGet(host, port, path, clientCallback, errCallback) {   
     var opts = {
