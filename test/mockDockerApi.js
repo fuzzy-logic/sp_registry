@@ -161,7 +161,7 @@ function containersJson() {
          "#(nop) ADD file:08524b1418681c45c9267bc2b48c30047cda5fdf11faee7a15db9cf5e31bdd51 in /"
       ],
       "Dns":null,
-      "Image":"sp-platform/spi-phenotype-monitor",
+      "Image":"sp-platform/spi-control-plane",
       "Volumes":null,
       "VolumesFrom":"",
       "WorkingDir":"",
@@ -215,6 +215,109 @@ function containersJson() {
    }
 };
 
+}
 
 
- }
+
+
+
+function phenotypeJson() {
+     
+    //console.log('mockDockerApi, controlPlaneJson()');
+   return {
+   "ID":"6b42b2f885203e5f20c654d60695cb02f1b546e665186ee60b022764ada2bc21",
+   "Created":"2014-04-10T04:54:16.437697468Z",
+   "Path":"/bin/sh",
+   "Args":[
+      "-c",
+      "/run.sh",
+      "/bin/sh",
+      "-c",
+      "#(nop) ADD file:08524b1418681c45c9267bc2b48c30047cda5fdf11faee7a15db9cf5e31bdd51 in /"
+   ],
+   "Config":{
+      "Hostname":"a1459bc88520",
+      "Domainname":"",
+      "User":"",
+      "Memory":0,
+      "MemorySwap":0,
+      "CpuShares":0,
+      "AttachStdin":false,
+      "AttachStdout":false,
+      "AttachStderr":false,
+      "PortSpecs":null,
+      "ExposedPorts":{
+         "8081/tcp":{
+
+         }
+      },
+      "Tty":false,
+      "OpenStdin":false,
+      "StdinOnce":false,
+      "Env":[
+         "sp-control-plane_PORT=8080",
+         "sp-control-plane_HOST=172.17.0.8",
+         "HOME=/",
+         "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+         "PROVIDES=sp-phenotype-monitor:8080"
+      ],
+      "Cmd":[
+         "/bin/sh",
+         "-c",
+         "#(nop) ADD file:08524b1418681c45c9267bc2b48c30047cda5fdf11faee7a15db9cf5e31bdd51 in /"
+      ],
+      "Dns":null,
+      "Image":"sp-platform/spi-phenotype-monitor",
+      "Volumes":null,
+      "VolumesFrom":"",
+      "WorkingDir":"",
+      "Entrypoint":[
+         "/bin/sh",
+         "-c",
+         "/run.sh"
+      ],
+      "NetworkDisabled":false,
+      "OnBuild":null
+   },
+   "State":{
+      "Running":true,
+      "Pid":13056,
+      "ExitCode":0,
+      "StartedAt":"2014-04-10T04:54:16.472916822Z",
+      "FinishedAt":"0001-01-01T00:00:00Z",
+      "Ghost":false
+   },
+   "Image":"778d358826fb2d5638d1436eb6da76b65916b7139fb9ecab3f468c75ef8aa967",
+   "NetworkSettings":{
+      "IPAddress":"172.17.0.8",
+      "IPPrefixLen":16,
+      "Gateway":"172.17.42.1",
+      "Bridge":"docker0",
+      "PortMapping":null,
+      "Ports":{
+         "8081/tcp":null
+      }
+   },
+   "ResolvConfPath":"/etc/resolv.conf",
+   "HostnamePath":"/var/lib/docker/containers/9a959bc885203e5f20c654d60695cb02f1b546e665186ee60b022764adc65677/hostname",
+   "HostsPath":"/var/lib/docker/containers/9a959bc885203e5f20c654d60695cb02f1b546e665186ee60b022764adc65677/hosts",
+   "Name":"/sp-phenotype-monitor",
+   "Driver":"aufs",
+   "ExecDriver":"native-0.1",
+   "Volumes":{
+
+   },
+   "VolumesRW":{
+
+   },
+   "HostConfig":{
+      "Binds":null,
+      "ContainerIDFile":"",
+      "LxcConf":null,
+      "Privileged":false,
+      "PortBindings":null,
+      "Links":null,
+      "PublishAllPorts":false
+   }
+  };
+}

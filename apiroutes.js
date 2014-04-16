@@ -109,9 +109,9 @@ exports.add_host = function (req, res) {
 
 
 exports.next_host = function(req, res) {
-    var service = req.params.service_name;
-    console.log("next_host() for service " + service );
-    var service_data = services[service];
+    var serviceName = req.params.service_name;
+    console.log("next_host() for serviceName " + serviceName );
+    var service_data = services[serviceName];
     
      if ( service_data == undefined ) {
        find_from_docker(serviceName, res);
@@ -138,7 +138,7 @@ exports.next_host = function(req, res) {
     
     var host = hostPort.split(':')[0];
     var port = hostPort.split(':')[1];
-    sendHost(host, port, service, res);
+    sendHost(host, port, serviceName, res);
 };
 
 function sendHost(host, port, serviceName, res) { 

@@ -133,11 +133,11 @@ describe('sp_registry tests: ', function(){
    //no match 
     
   it('check docker api when no match for host', function(done){
-	var req = request.get(host + '/service/sp-control-plane');
+	var req = request.get(host + '/service/sp-phenotype-monitor');
 	req.end(function(res){
           //console.log("res: " + res.text);
-    	  assert.ok(contains(res.text, '172.17.0.10'));
-          assert.ok(contains(res.text, '8080'));
+    	  assert.ok(contains(res.text, '172.17.0.8'));
+          assert.ok(contains(res.text, '8081'));
     	  done();
     	});
 
@@ -157,7 +157,7 @@ describe('sp_registry tests: ', function(){
   it('check docker api when no match for next host', function(done){
 	var req = request.get(host + '/service/sp-control-plane/host/next');
 	req.end(function(res){
-          //console.log("check docker res: " + res.text);
+          console.log("check docker next host res: " + res.text);
     	  assert.ok(contains(res.text, '172.17.0.10'));
           assert.ok(contains(res.text, '8080'));
     	  done();
