@@ -44,14 +44,9 @@ exports.services = function (req, res) {
   res.send(JSON.stringify(services));
 };
 
-
-
-exports.get_service = function (req, res) {
-  var serviceName = req.params.service_name;
-  var service_data = services[serviceName];
-    //console.log('get_service() service_data=' + JSON.stringify(service_data) );
-    if ( service_data == undefined ) {
-        //console.log('unable to find service in memory, looking up docker services...');
+function find_from_docker(serviceName, res) {
+    
+     //console.log('find_from_docker() unable to find service in memory, looking up docker services...');
         
         var errCallback = function(err) {
             //consol.log('ERROR in get_service()->errCallback()');
@@ -59,25 +54,40 @@ exports.get_service = function (req, res) {
         }
         var nestedCallback = function(body) {
             //console.log('get_service()->nestedCallback()');
-            var dockerResponse = JSON.parse(body);         
-             var ip = dockerResponse.NetworkSettings.IPAddress;
-             var port = "8080";
-             addNewService(serviceName, ip, port);
-             res.send(JSON.stringify({host: ip, port: port}));
+            var dockerResponse = JSON.parse(body);  
+            if (! dockerResponse.NetworkSettings) {
+               res.send(JSON.stringify({err: "no matching host in registry for service " + serviceName}));  
+            }
+            var ip = dockerResponse.NetworkSettings.IPAddress;
+            var keys = dockerResponse.Config.ExposedPorts;
+            var port = '';
+            for (var key in keys) {
+              port = key.split('/')[0];
+            }
+            //console.log("got ip/port from docker: " + ip + ':' + port);
+            addNewService(serviceName, ip, port);
+            res.send(JSON.stringify({host: ip, port: port}));
         }
         
         var callback = function (body) { 
-             //console.log('get_service()->callback()');
+            //console.log('get_service()->callback()');
             var dockerResponse = JSON.parse(body);
             var dockerServiceInfo = _.filter(dockerResponse, function(entry) {return (entry.Names[0]  == '/' + serviceName);} );
             //console.log('get_service()->callback() dockerServiceInfo=' + JSON.stringify(dockerServiceInfo));             
             inspectContainer(serviceName, nestedCallback, errCallback);
         }
-        
-       
-         
+
         listDockerContainers(callback, errCallback);
-        
+    
+}
+
+exports.get_service = function (req, res) {
+  var serviceName = req.params.service_name;
+  var service_data = services[serviceName];
+    //console.log('get_service() service_data=' + JSON.stringify(service_data) );
+    if ( service_data == undefined ) {
+        //console.log('unable to find service in memory, looking up docker services...');
+       find_from_docker(serviceName, res);
     } else {
         res.send(JSON.stringify(service_data));
     }
@@ -107,6 +117,12 @@ exports.next_host = function(req, res) {
     var service = req.params.service_name;
     //console.log("next_host() for service " + service );
     var service_data = services[service];
+    
+     if ( service_data == undefined ) {
+       find_from_docker(serviceName, res);
+       return;
+    } 
+    
     ////console.log("service data: " + JSON.stringify(service_data) );
     if ( service_data['counter'] == undefined ) {
         service_data['counter'] = 0;

@@ -130,17 +130,40 @@ describe('test adding service and host via service registry', function(){
     	});
 
   });
+   //no match 
     
-    
-  it('check docker api when no match', function(done){
+  it('check docker api when no match for host', function(done){
 	var req = request.get(host + '/service/sp-control-plane');
 	req.end(function(res){
           //console.log("res: " + res.text);
-    	  //assert.ok(contains(res.text, '192.168.0.1:80'));
+    	  assert.ok(contains(res.text, '172.17.0.10'));
+          assert.ok(contains(res.text, '8080'));
     	  done();
     	});
 
   });
+    
+  it('check return message when no match in docker', function(done){
+	var req = request.get(host + '/service/sp-does-not-exist');
+	req.end(function(res){
+          //console.log("res: " + res.text);
+    	  assert.ok(contains(res.text, 'no match'));
+    	  done();
+    	});
+
+  });
+    
+  it('check docker api when no match for next host', function(done){
+	var req = request.get(host + '/service/sp-control-plane/host/next');
+	req.end(function(res){
+          //console.log("res: " + res.text);
+    	  assert.ok(contains(res.text, '172.17.0.10'));
+          assert.ok(contains(res.text, '8080'));
+    	  done();
+    	});
+
+  });
+    
     
 
 
