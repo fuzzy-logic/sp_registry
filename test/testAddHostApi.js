@@ -6,7 +6,7 @@ require('../app.js'); //Boot up the server for tests
 var host = 'http://localhost:8888';
 
 
-describe('test adding service and host via service registry', function(){
+describe('sp_registry tests: ', function(){
 
   it('create new service and ensure response returns success', function(done){
     var senddata = {name: "testservice",  port: "8888",  hosts: ["192.168.0.1:80", "192.168.0.2:80"]};  
@@ -41,7 +41,7 @@ describe('test adding service and host via service registry', function(){
   it('next host round robin', function(done){
 	var req = request.get(host + '/service/testservice/host/next');
 	req.end(function(res){
-         //console.log("res1: " + res.text)
+         //console.log("next host res: " + res.text)
           var json = JSON.parse(res.text);
     	  assert.ok(contains(json.host, '192.168.0.2'));
           assert.ok(contains(json.port, '80'));
@@ -146,7 +146,8 @@ describe('test adding service and host via service registry', function(){
   it('check return message when no match in docker', function(done){
 	var req = request.get(host + '/service/sp-does-not-exist');
 	req.end(function(res){
-          //console.log("res: " + res.text);
+          //console.log("no match res: " + res.text);
+          assert.equal(res.status, 404);
     	  assert.ok(contains(res.text, 'no match'));
     	  done();
     	});
@@ -156,9 +157,19 @@ describe('test adding service and host via service registry', function(){
   it('check docker api when no match for next host', function(done){
 	var req = request.get(host + '/service/sp-control-plane/host/next');
 	req.end(function(res){
-          //console.log("res: " + res.text);
+          //console.log("check docker res: " + res.text);
     	  assert.ok(contains(res.text, '172.17.0.10'));
           assert.ok(contains(res.text, '8080'));
+    	  done();
+    	});
+
+  });
+    
+    it('/debug url works', function(done){
+	var req = request.get(host + '/debug');
+	req.end(function(res){
+          //console.log("/debug res: " + res.text);
+    	  assert.ok(contains(res.text, 'testservice'));
     	  done();
     	});
 
@@ -171,5 +182,6 @@ describe('test adding service and host via service registry', function(){
 
 
 function contains(string, value) {
+    if (string == undefined) return false;
     return string.indexOf(value) > -1    
 }

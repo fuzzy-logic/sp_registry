@@ -5,24 +5,24 @@ function apiHandler(req, res) {
    var url_parts = url.parse(req.url);
    //console.log('url path: ' + url_parts.path);    
    if (url_parts.path == '/containers/json') {
-      // console.log('mockDockerApi, writing containersJson()');
+      console.log('mockDockerApi, writing containersJson()');
       res.writeHead(200, {'Content-Type': 'application/json'});
       res.write(JSON.stringify(containersJson()) );
       res.end(); 
    } else if (url_parts.path == '/containers/sp-phenotype-monitor/json') {
-       // console.log('mockDockerApi, writing phenotypeJson()');
+      console.log('mockDockerApi, writing phenotypeJson()');
       res.writeHead(200, {'Content-Type': 'application/json'});
       res.write(JSON.stringify(phenotypeJson()) );
       res.end();        
        
    } else if (url_parts.path == '/containers/sp-control-plane/json') {
-      // console.log('mockDockerApi, writing controlPlaneJson()');
+      console.log('mockDockerApi, writing controlPlaneJson()');
       res.writeHead(200, {'Content-Type': 'application/json'});
       res.write(JSON.stringify(controlPlaneJson()) );
       res.end();        
        
    } else {
-      // console.log('mockDockerApi, no match for ' + url_parts.path);
+      console.log('mockDockerApi, no match for ' + url_parts.path);
       res.writeHead(200, {'Content-Type': 'application/json'});
       res.write(JSON.stringify({error: "no record found matching " + url_parts.path}) );      
       res.end();  

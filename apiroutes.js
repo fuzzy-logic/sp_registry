@@ -16,12 +16,6 @@ exports.new_service = function (req, res) {
     } catch (e) {
         body = req.body;
     }
-  
-//  var isValid = validateService(body);
-//  if (! isValid) {
-//      console.log("ERROR: service data invalid");
-//      res.send(JSON.stringify({error: "service data invalid"})); 
-//  }
   var servicename = req.params.service_name;
   //console.log('exports.new_service(): service=' + servicename);
   body['link'] = "/service/" + servicename 
@@ -46,17 +40,18 @@ exports.services = function (req, res) {
 
 function find_from_docker(serviceName, res) {
     
-     console.log('find_from_docker() unable to find service in memory, looking up docker services...');
+     console.log('find_from_docker() unable to find service "' + serviceName + '" in memory, looking up docker services...');
         
         var errCallback = function(err) {
             //consol.log('ERROR in get_service()->errCallback()');
             console.dir(err); 
         }
-        var nestedCallback = function(body) {
-            //console.log('get_service()->nestedCallback()');
-            var dockerResponse = JSON.parse(body);  
+        var nestedCallback = function(body) {           
+            var dockerResponse = JSON.parse(body);
+            //console.log('get_service()->nestedCallback() dockerResponse: ' + body );
             if (! dockerResponse.NetworkSettings) {
-               res.send(JSON.stringify({err: "no matching host in registry for service " + serviceName}));  
+                send404(serviceName, res);
+                return;
             }
             var ip = dockerResponse.NetworkSettings.IPAddress;
             var keys = dockerResponse.Config.ExposedPorts;
@@ -64,9 +59,9 @@ function find_from_docker(serviceName, res) {
             for (var key in keys) {
               port = key.split('/')[0];
             }
-            console.log("got ip/port from docker: " + ip + ':' + port);
+            //console.log("got ip/port from docker: " + ip + ':' + port);
             addNewService(serviceName, ip, port);
-            res.send(JSON.stringify({host: ip, port: port}));
+            sendHost(ip, port, serviceName, res);
         }
         
         var callback = function (body) { 
@@ -115,7 +110,7 @@ exports.add_host = function (req, res) {
 
 exports.next_host = function(req, res) {
     var service = req.params.service_name;
-    //console.log("next_host() for service " + service );
+    console.log("next_host() for service " + service );
     var service_data = services[service];
     
      if ( service_data == undefined ) {
@@ -143,8 +138,24 @@ exports.next_host = function(req, res) {
     
     var host = hostPort.split(':')[0];
     var port = hostPort.split(':')[1];
-    res.send({host: host, port: port});
+    sendHost(host, port, service, res);
 };
+
+function sendHost(host, port, serviceName, res) { 
+    console.log("sendHost(host:%s, port:%s, service:%s, res:%s)", host, port, serviceName, res);
+    if (! host) {
+      send404(serviceName, res);
+    } else {
+        console.log("sendHost() returning host/port %s/%s for service %s", host, port, serviceName);
+       res.send({host: host, port: port}); 
+    }
+    
+}
+
+function send404(serviceName, res) {
+    console.log('send404() no matching host for serviceName=' + serviceName + " returning 404 message");
+    res.send(404, JSON.stringify({message: 'no matching host found for name ' + serviceName}));  
+}
 
 
 
@@ -199,7 +210,7 @@ function inspectContainer(name, callback, errCallback) {
 
 
 exports.debug = function (req, res) {
-     res.send({services: services});
+     res.send(JSON.stringify(services));
 }
 
 
